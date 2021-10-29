@@ -40,32 +40,24 @@ class SignInFormBloc extends Bloc<SignInFormEvent, SignInFormState> {
 
   void _onRegisterWithCredentials(RegisterWithCredentialsPressed event,
       Emitter<SignInFormState> emit) async {
-    final isEmailValid = state.emailAddress.isValid();
-    final isPasswordValid = state.password.isValid();
-    if (isEmailValid && isPasswordValid) {
-      emit(state.copyWith(
-        isSubmitting: true,
-        authFailureOrSuccessOption: none(),
-      ));
-      final failureOrSuccess = await _authFacade.registerWithEmailAndPassword(
-        emailAddress: state.emailAddress,
-        password: state.password,
-      );
-      emit(state.copyWith(
-        isSubmitting: false,
-        authFailureOrSuccessOption: some(failureOrSuccess),
-      ));
-    } else {
-      emit(state.copyWith(
-        isSubmitting: false,
-        authFailureOrSuccessOption: none(),
-        showErrorMessages: true,
-      ));
-    }
+    _performActionOnAuthFacadeWithCredentials(
+        emit, _authFacade.registerWithEmailAndPassword);
   }
 
   void _onSignInWithCredentials(
-      SignInWithCredentialsPressed event, Emitter<SignInFormState> emit) async {
+      SignInWithCredentialsPressed event, Emitter<SignInFormState> emit) {
+    _performActionOnAuthFacadeWithCredentials(
+        emit, _authFacade.signInWithEmailAndPassword);
+  }
+
+  void _performActionOnAuthFacadeWithCredentials(
+    Emitter<SignInFormState> emit,
+    Future<Either<AuthFailure, Unit>> Function({
+      required EmailAddress emailAddress,
+      required Password password,
+    })
+        forwardedCall,
+  ) async {
     final isEmailValid = state.emailAddress.isValid();
     final isPasswordValid = state.password.isValid();
     if (isEmailValid && isPasswordValid) {
@@ -73,7 +65,7 @@ class SignInFormBloc extends Bloc<SignInFormEvent, SignInFormState> {
         isSubmitting: true,
         authFailureOrSuccessOption: none(),
       ));
-      final failureOrSuccess = await _authFacade.signInWithEmailAndPassword(
+      final failureOrSuccess = await forwardedCall(
         emailAddress: state.emailAddress,
         password: state.password,
       );
