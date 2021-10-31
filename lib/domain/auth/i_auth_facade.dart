@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:ddd_architecture_flutter/domain/auth/auth_failure.dart';
+import 'auth_failure.dart';
 
 import 'value_objects.dart';
 
