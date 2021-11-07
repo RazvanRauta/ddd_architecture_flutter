@@ -2,16 +2,22 @@ import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../domain/auth/auth_failure.dart';
 import '../../domain/auth/i_auth_facade.dart';
 import '../../domain/auth/value_objects.dart';
 
+@LazySingleton(as: IAuthFacade)
 class FirebaseAuthFacade implements IAuthFacade {
+  //This has to be injected as dependencies
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
 
-  FirebaseAuthFacade(this._firebaseAuth, this._googleSignIn);
+  FirebaseAuthFacade(
+    this._firebaseAuth,
+    this._googleSignIn,
+  );
 
   @override
   Future<Either<AuthFailure, Unit>> registerWithEmailAndPassword({
