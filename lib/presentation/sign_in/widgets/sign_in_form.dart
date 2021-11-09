@@ -1,6 +1,7 @@
 import '../../../application/auth/sign_in_form/bloc/sign_in_form_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:another_flushbar/flushbar_helper.dart';
 
 class SignInForm extends StatelessWidget {
   const SignInForm({Key? key}) : super(key: key);
@@ -9,28 +10,29 @@ class SignInForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<SignInFormBloc, SignInFormState>(
       listener: (context, state) {
-        // state.authFailureOrSuccessOption.fold(
-        //   () {},
-        //   (either) => either.fold(
-        //     (failure) {
-        //       FlushestHelper.createError(
-        //         message: failure.map(
-        //           cancelledByUser: (_) => 'Cancelled',
-        //           serverError: (_) => 'Server error',
-        //           emailAlreadyInUse: (_) => 'Email already in use',
-        //           invalidCredentials: (_) =>
-        //               'Invalid email and password combination',
-        //         ),
-        //       ).show(context);
-        //     },
-        //     (_) {
-        //       ExtendedNavigator.of(context).replace(Routes.notesOverviewPage);
-        //       context
-        //           .read<AuthBloc>()
-        //           .add(const AuthEvent.authCheckRequested());
-        //     },
-        //   ),
-        // );
+        state.authFailureOrSuccessOption.fold(
+          () {},
+          (either) => either.fold(
+            (failure) {
+              FlushbarHelper.createError(
+                message: failure.map(
+                  cancelledByUser: (_) => 'Cancelled',
+                  serverError: (_) => 'Server error',
+                  emailAlreadyInUse: (_) => 'Email already in use',
+                  invalidCredentials: (_) =>
+                      'Invalid email and password combination',
+                ),
+              ).show(context);
+            },
+            (_) {
+              // ExtendedNavigator.of(context).replace(Routes.notesOverviewPage);
+              // context
+              //     .read<AuthBloc>()
+              //     .add(const AuthEvent.authCheckRequested());
+              print("hello");
+            },
+          ),
+        );
       },
       builder: (context, state) {
         return Form(
